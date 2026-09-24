@@ -34,7 +34,9 @@ public final class FixedArrayBookstore implements BookstoreAPI {
     @Override
     public boolean removeByIsbn(String isbn) {
         // TODO T4: implement the documented extension contract.
-        throw new UnsupportedOperationException("T4 is an exercise");
+        if (isbn == null) { //throwing an exception if isbn is null
+            throw new NullPointerException("isbn cannot be null"); //it cant be null due to it being an indentifier for every book
+        }
     }
 
     /** {@inheritDoc} */

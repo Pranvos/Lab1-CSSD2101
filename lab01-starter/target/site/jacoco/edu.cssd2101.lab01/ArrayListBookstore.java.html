@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ArrayListBookstore.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSSD2101 Lab 01 starter</a> &gt; <a href="index.source.html" class="el_package">edu.cssd2101.lab01</a> &gt; <span class="el_source">ArrayListBookstore.java</span></div><h1>ArrayListBookstore.java</h1><pre class="source lang-java linenums">package edu.cssd2101.lab01;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/** ArrayList implementation with linear uniqueness checks and immutable snapshots. */
+public final class ArrayListBookstore implements BookstoreAPI {
+<span class="fc" id="L9">    private final List&lt;Book&gt; books = new ArrayList&lt;&gt;();</span>
+
+    /** Creates an empty catalogue. */
+<span class="fc" id="L12">    public ArrayListBookstore() {}</span>
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean add(Book book) {
+<span class="fc" id="L17">        Objects.requireNonNull(book, &quot;book&quot;);</span>
+<span class="fc bfc" id="L18" title="All 2 branches covered.">        if (books.contains(book)) return false;</span>
+<span class="fc" id="L19">        books.add(book);</span>
+<span class="fc" id="L20">        return true;</span>
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean removeByIsbn(String isbn) {
+<span class="nc" id="L26">        String key = Book.normalizeIsbn(isbn);</span>
+<span class="nc" id="L27">        return books.removeIf(b -&gt; b.isbn().equals(key));</span>
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List&lt;Book&gt; allBooks() {
+<span class="fc" id="L33">        return List.copyOf(books);</span>
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int size() {
+<span class="fc" id="L39">        return books.size();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

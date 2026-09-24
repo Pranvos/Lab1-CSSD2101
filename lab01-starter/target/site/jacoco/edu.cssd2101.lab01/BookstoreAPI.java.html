@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>BookstoreAPI.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CSSD2101 Lab 01 starter</a> &gt; <a href="index.source.html" class="el_package">edu.cssd2101.lab01</a> &gt; <span class="el_source">BookstoreAPI.java</span></div><h1>BookstoreAPI.java</h1><pre class="source lang-java linenums">package edu.cssd2101.lab01;
+
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * Insertion-ordered, ISBN-unique catalogue; implementations are not thread-safe.
+ *
+ * &lt;p&gt;Null arguments are rejected. Invalid ISBN syntax and blank search text are rejected rather
+ * than treated as misses. Snapshots are detached. A duplicate add preserves the original entry.
+ * This is a catalogue, not a stock counter.
+ */
+public interface BookstoreAPI {
+    /**
+     * Adds an entry if absent. Duplicate detection is O(n).
+     *
+     * @param book nonnull entry
+     * @return true if added, false for an existing ISBN
+     * @throws NullPointerException if book is null
+     * @throws IllegalStateException if a fixed store has no free slot for a new ISBN
+     */
+    boolean add(Book book);
+
+    /**
+     * Removes the matching entry, preserving survivor order, in O(n).
+     *
+     * @param isbn syntactically valid ISBN
+     * @return true if removed
+     * @throws NullPointerException if isbn is null
+     * @throws IllegalArgumentException if ISBN syntax is invalid
+     */
+    boolean removeByIsbn(String isbn);
+
+    /**
+     * Looks up identity in O(n).
+     *
+     * @param isbn syntactically valid ISBN
+     * @return matching entry or empty
+     * @throws NullPointerException if isbn is null
+     * @throws IllegalArgumentException if syntax is invalid
+     */
+    default Optional&lt;Book&gt; findByIsbn(String isbn) {
+<span class="fc" id="L43">        String key = Book.normalizeIsbn(isbn);</span>
+<span class="fc" id="L44">        return allBooks().stream().filter(b -&gt; b.isbn().equals(key)).findFirst();</span>
+    }
+
+    /**
+     * Returns an immutable detached snapshot in insertion order, in O(n).
+     *
+     * @return nonnull list containing no nulls
+     */
+    List&lt;Book&gt; allBooks();
+
+    /**
+     * Counts stored entries in O(1).
+     *
+     * @return number of entries
+     */
+    int size();
+
+    /**
+     * Returns an independent, compact array in O(n).
+     *
+     * @return mutable detached array
+     */
+    default Book[] snapshotArray() {
+<span class="fc" id="L67">        return allBooks().toArray(Book[]::new);</span>
+    }
+
+    /**
+     * Searches case-insensitive title substrings, in O(n) apart from text length.
+     *
+     * @param query nonblank text, stripped and normalized using Locale.ROOT
+     * @return immutable matching snapshot in insertion order
+     * @throws NullPointerException if query is null
+     * @throws IllegalArgumentException if query is blank
+     */
+    default List&lt;Book&gt; findByTitle(String query) {
+<span class="fc" id="L79">        String key = Book.text(query).toLowerCase(java.util.Locale.ROOT);</span>
+<span class="fc" id="L80">        return allBooks().stream()</span>
+<span class="fc" id="L81">                .filter(b -&gt; b.title().toLowerCase(java.util.Locale.ROOT).contains(key))</span>
+<span class="fc" id="L82">                .toList();</span>
+    }
+
+    /**
+     * Searches case-insensitive author substrings in O(n).
+     *
+     * @param query nonblank query
+     * @return immutable matching snapshot in insertion order
+     * @throws NullPointerException if query is null
+     * @throws IllegalArgumentException if query is blank
+     */
+    default List&lt;Book&gt; findByAuthor(String query) {
+        // TODO T3: implement the documented extension contract.
+<span class="nc" id="L95">        throw new UnsupportedOperationException(&quot;T3 is an exercise&quot;);</span>
+    }
+
+    /**
+     * Finds entries within inclusive cent bounds in O(n).
+     *
+     * @param minimum nonnegative lower bound
+     * @param maximum upper bound at least minimum
+     * @return immutable matches in insertion order
+     * @throws IllegalArgumentException if bounds are invalid
+     */
+    default List&lt;Book&gt; findByPriceRange(long minimum, long maximum) {
+        // TODO T3: implement the documented extension contract.
+<span class="nc" id="L108">        throw new UnsupportedOperationException(&quot;T3 is an exercise&quot;);</span>
+    }
+
+    /**
+     * Finds entries by exact year in O(n); any integer query is permitted.
+     *
+     * @param year requested year
+     * @return immutable matches in insertion order
+     */
+    default List&lt;Book&gt; findByYear(int year) {
+<span class="nc bnc" id="L118" title="All 2 branches missed.">        return allBooks().stream().filter(b -&gt; b.year() == year).toList();</span>
+    }
+
+    /**
+     * Sums exact cents in O(n).
+     *
+     * @return zero for an empty catalogue
+     * @throws ArithmeticException if the total exceeds long range
+     */
+    default long inventoryValueCents() {
+        // TODO T3: implement the documented extension contract.
+<span class="nc" id="L129">        throw new UnsupportedOperationException(&quot;T3 is an exercise&quot;);</span>
+    }
+
+    /**
+     * Finds the highest price, choosing first insertion on ties, in O(n).
+     *
+     * @return expensive entry or empty
+     */
+    default Optional&lt;Book&gt; mostExpensive() {
+        // TODO T3: implement the documented extension contract.
+<span class="nc" id="L139">        throw new UnsupportedOperationException(&quot;T3 is an exercise&quot;);</span>
+    }
+
+    /**
+     * Finds the latest publication, choosing first insertion on ties, in O(n).
+     *
+     * @return latest entry or empty
+     */
+    default Optional&lt;Book&gt; mostRecent() {
+        // TODO T3: implement the documented extension contract.
+<span class="nc" id="L149">        throw new UnsupportedOperationException(&quot;T3 is an exercise&quot;);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>
