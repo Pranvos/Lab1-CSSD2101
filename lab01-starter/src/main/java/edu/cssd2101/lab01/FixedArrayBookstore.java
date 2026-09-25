@@ -56,7 +56,7 @@ public final class FixedArrayBookstore implements BookstoreAPI {
             }
         }
 
-
+        return false;
     }
 
     /** {@inheritDoc} */
