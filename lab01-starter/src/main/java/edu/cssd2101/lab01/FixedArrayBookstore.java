@@ -34,9 +34,29 @@ public final class FixedArrayBookstore implements BookstoreAPI {
     @Override
     public boolean removeByIsbn(String isbn) {
         // TODO T4: implement the documented extension contract.
-        if (isbn == null) { //throwing an exception if isbn is null
-            throw new NullPointerException("isbn cannot be null"); //it cant be null due to it being an indentifier for every book
+
+        // throwing an exception if isbn is null
+        // it cant be null due to it being an indentifier for every book
+        if (isbn == null){ throw new NullPointerException("isbn cannot be null"); }
+
+        // Loop through books array to find the indexToRemove
+        for(int i = 0; i < size; i++){
+            if(books[i].isbn().equals(isbn)){
+
+
+
+                // Loop through remainder of the array, shifting elements to the left
+                for(int j = i; j < size - 1; j++){
+                    books[j] = books[j + 1];
+                }
+
+                books[size - 1] = null;
+                size--;
+                return true;
+            }
         }
+
+
     }
 
     /** {@inheritDoc} */
