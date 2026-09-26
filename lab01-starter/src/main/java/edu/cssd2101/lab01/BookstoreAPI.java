@@ -110,6 +110,7 @@ public interface BookstoreAPI {
             throw new IllegalArgumentException("Invalid price range");
         }
         return allBooks().stream().filter(b -> b.priceCents() >= minimum && b.priceCents() <= maximum).toList();
+    }
 
     /**
      * Finds entries by exact year in O(n); any integer query is permitted.
@@ -129,7 +130,11 @@ public interface BookstoreAPI {
      */
     default long inventoryValueCents() {
         // John - Finished
-        return allBooks().stream().filter(b -> b.year() == year).toList();
+        long sum=0;
+        for (Book book : allBooks()){
+            sum = Math.addExact(sum, book.priceCents());
+        }
+        return sum;
     }
 
     /**
@@ -139,20 +144,6 @@ public interface BookstoreAPI {
      */
     default Optional<Book> mostExpensive() {
         // John - finished
-        long total = 0;
-        for (Book book : allBooks()) {
-            total = Math.addExact(total, book.priceCents());
-    }
-        return total;
-    }
-
-    /**
-     * Finds the latest publication, choosing first insertion on ties, in O(n).
-     *
-     * @return latest entry or empty
-     */
-    default Optional<Book> mostRecent() {
-        // John - Finished
         Book expensive = null;
         for (Book book : allBooks()) {
             if (expensive == null || book.priceCents() > expensive.priceCents()) {
@@ -165,4 +156,25 @@ public interface BookstoreAPI {
         else {
             return Optional.of(expensive);
         }
+    }
+    /**
+     * Finds the latest publication, choosing first insertion on ties, in O(n).
+     *
+     * @return latest entry or empty
+     */
+    default Optional<Book> mostRecent() {
+        // John - Finished
+        Book recent = null;
+        for (Book book : allBooks()) {
+            if (recent == null || book.year() > recent.year()) {
+                recent = book;
+            }
+        }
+        if (recent == null) {
+            return Optional.empty();
+        } 
+        else {
+            return Optional.of(recent);
+        }
+    }
 }
