@@ -127,4 +127,48 @@ class StoreContractTest {
     void deterministicDemoRuns() {
         Main.main(new String[0]);
     }
+
+    /**
+     * T2:
+     * Thanks to polymorphism, a BookstoreAPI reference can point to either
+     * a FixedArrayBookstore or an ArrayListBookstore. The rest of the code
+     * only talks to the interface rather than the concrete implementation,
+     * letting Java handle the method calls at runtime. This keeps everything
+     * decoupled and lets us swap out storage engines seamlessly.
+     */
+    @ParameterizedTest
+    @ValueSource(booleans = {false, true})
+    void testT2BaselineApi(boolean array) {
+        // create a new store instance
+        BookstoreAPI s = store(array);
+        assertEquals(0, s.size());
+
+        // add a book first
+        assertTrue(s.add(a));
+        assertEquals(1, s.size());
+
+        // try adding a duplicate with different metadata to make sure it gets rejected
+        Book duplicate = new Book(a.isbn(), "Different Title", "Other Author", 9999, 2027);
+        assertFalse(s.add(duplicate));
+
+        // make sure it kept the original instance in memory instead of overwriting it
+        Book retrieved = s.findByIsbn(a.isbn()).orElseThrow();
+        assertSame(a, retrieved);
+        assertEquals("INDIGO Java", retrieved.title());
+
+        // grab a list snapshot and an exported array
+        List<Book> snapshot = s.allBooks();
+        Book[] exported = s.snapshotArray();
+
+        // Verify encapsulation: mutating the exported array must not affect internal store state
+        exported[0] = null;
+        assertEquals(1, s.size());
+        assertNotNull(s.findByIsbn(a.isbn()).orElse(null));
+
+        // adding a new book later shouldn't change our old snapshot
+        s.add(b);
+        assertEquals(1, snapshot.size());
+        assertEquals(List.of(a), snapshot);
+        assertEquals(2, s.size());
+    }
 }
