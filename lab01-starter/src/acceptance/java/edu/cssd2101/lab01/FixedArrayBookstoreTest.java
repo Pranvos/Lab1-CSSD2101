@@ -65,14 +65,23 @@ public class FixedArrayBookstoreTest{
         store.add(bookB);
         store.add(bookC);
 
-        // If a duplicate is found, it will reuturn false and not throw an exception
+        // If a duplicate is found,
+        // it will reuturn false and not throw an exception
+        // this works because of how the add method was
+        // implemented
         assertFalse(store.add(bookA));
 
         // Adding a new book is rejected
         Book bookD = new Book("444", "Book D", "Author D");
-        assertThrows(IllegalStateException.class, () -> store.add(bookD));
+        try {
+            store.add(bookD);
+            fail("WONT RUN! (hopefully)");
+        } catch (IllegalStateException e) {
+            // CRASHED!!!
+        }
 
-        // Should be able to add after removal
+        // We need to be able to add elements after 1 is
+        // removed
         assertTrue(store.removeByIsbn("222"));
         assertTrue(store.add(bookD));
         assertEquals(3, store.size());
