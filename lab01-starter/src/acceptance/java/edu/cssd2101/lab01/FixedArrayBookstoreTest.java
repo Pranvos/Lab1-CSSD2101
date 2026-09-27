@@ -92,9 +92,19 @@ public class FixedArrayBookstoreTest{
     void testCapacityEdgeCases() {
         // Zero capacity is permitted but cannot store items
         FixedArrayBookstore zeroStore = new FixedArrayBookstore(0);
-        assertThrows(IllegalStateException.class, () -> zeroStore.add(bookA));
+        try {
+            zeroStore.add(bookA);
+            fail("Error should have been thrown!");
+        } catch (IllegalStateException e) {
+            // CRASHED!!!
+        }
 
-        // Negative capacity is rejected
-        assertThrows(IllegalArgumentException.class, () -> new FixedArrayBookstore(-1));
+        // Negative capacity causes error to be thrown
+        try {
+            new FixedArrayBookstore(-1);
+            fail("Error should have been thrown!");
+        } catch (IllegalArgumentException e) {
+            // CRASHED!!!
+        }
     }
 }
